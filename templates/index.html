@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Boutique de tasses</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+        h1 { color: #333; }
+        .produit {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        a {
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        a:hover { background-color: #0056b3; }
+        .info { margin-bottom: 20px; }
+        .message { color: green; font-weight: bold; }
+        .flash { color: darkorange; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Bienvenue dans la boutique de tasses</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-message">
+      {% for msg in messages %}
+        <p>{{ msg }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+    {% if email %}
+        <div class="info">Connecté en tant que <strong>{{ email }}</strong></div>
+    {% else %}
+        <div class="info">
+            <a href="{{ url_for('register') }}">Créer un compte</a>
+        </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    {% for produit in produits %}
+        <div class="produit">
+            <h3>{{ produit.nom }}</h3>
+            <p>- {{ produit.prix }} €</p>
+            <a href="{{ url_for('achat', nom_produit=produit.nom) }}">Acheter</a>
+        </div>
+    {% endfor %}
+
+    {% if 'user_email' in session %}
+  <p>Connecté en tant que {{ session['user_email'] }}</p>
+  <a href="{{ url_for('logout') }}" class="btn-deconnexion">Déconnexion</a>
+{% else %}
+  <a href="{{ url_for('register') }}" class="btn-connexion">Créer un compte</a>
+{% endif %}
+
+
+</body>
+</html>

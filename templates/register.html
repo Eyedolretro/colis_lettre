@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f7f7f7; }
+        h1 { color: #333; }
+        form {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover { background-color: #0056b3; }
+        .message { color: green; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Créer un compte</h1>
+
+    <form method="POST">
+        <label for="email">Adresse e-mail :</label><br>
+        <input type="email" name="email" required><br>
+        <label for="password">Mot de passe :</label><br>
+        <input type="password" name="password" required><br>
+        <input type="submit" value="S'inscrire / Se connecter">
+    </form>
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Retour à l'accueil</a></p>
+
+</body>
+</html>
