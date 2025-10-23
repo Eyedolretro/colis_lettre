@@ -5,6 +5,7 @@ from flask_mail import Mail, Message
 import random
 import string
 
+
 app = Flask(__name__)
 app.secret_key = 'ton_secret_key'
 
@@ -85,32 +86,37 @@ def achat(nom_produit):
         return redirect(url_for('register'))
 
     email = session['user_email']
-
-    # Génération du code de livraison (6 caractères alphanumériques)
     code_livraison = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
-    # Envoi mail de confirmation d'achat avec le code de livraison
-    msg = Message("Confirmation d'achat et code de livraison",
+    # Génération du lien unique avec le code
+    lien_autorisation = url_for('autoriser_livraison', code=code_livraison, _external=True)
+
+    msg = Message("Autorisez la livraison en boîte aux lettres",
                   sender=app.config['MAIL_USERNAME'],
                   recipients=[email])
-    msg.body = f"""
-    Bonjour {email},
-
-    Votre achat de '{nom_produit}' est confirmé !
-
-    Voici votre code de livraison : {code_livraison}
-
-    Ce code sera à présenter au livreur lors de la réception du colis.
-
-    Merci pour votre confiance,
-    L'équipe Projet-Colis
+    msg.html = f"""
+    <p>Bonjour {email},</p>
+    <p>Votre achat de <b>{nom_produit}</b> est confirmé 🎉</p>
+    <p>Voici votre code unique&nbsp;: <b>{code_livraison}</b></p>
+    <p>Pour autoriser la livraison en boîte aux lettres demain, cliquez simplement sur le bouton ci-dessous&nbsp;:</p>
+    <p>
+      <a href="{lien_autorisation}" style="
+          background-color:#4CAF50;
+          color:white;
+          padding:12px 24px;
+          text-decoration:none;
+          border-radius:6px;
+          display:inline-block;
+      ">
+        Autoriser la livraison
+      </a>
+    </p>
+    <p>Merci de votre confiance,<br>L’équipe Projet-Colis</p>
     """
+
     mail.send(msg)
-
-    # Stockage du code dans la session (temporairement)
     session['code_livraison'] = code_livraison
-    session['message'] = f"Achat confirmé pour {nom_produit} ! Un code de livraison a été envoyé à votre adresse e-mail."
-
+    session['message'] = f"Achat confirmé pour {nom_produit} ! Un email contenant votre lien d’autorisation a été envoyé."
     return redirect(url_for('index'))
 
 @app.route('/users')
@@ -136,23 +142,24 @@ import random, string
 
 @app.route('/autoriser_livraison', methods=['GET', 'POST'])
 def autoriser_livraison():
+    code_attendu = session.get('code_livraison')
+    code_recu = request.args.get('code') or request.form.get('code')
+
+    if not code_attendu:
+        flash("Aucun code de livraison trouvé. Veuillez effectuer un achat d'abord.")
+        return redirect(url_for('index'))
+
+    if code_recu and code_recu == code_attendu:
+        session['livraison_autorisee'] = True
+        flash("✅ Ok pour la livraison en boîte aux lettres demain. Merci pour votre validation !")
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
-        code_saisi = request.form['code']
-        code_attendu = session.get('code_livraison')
-
-        if not code_attendu:
-            flash("Aucun code de livraison trouvé. Veuillez effectuer un achat d'abord.")
-            return redirect(url_for('index'))
-
-        if code_saisi == code_attendu:
-            session['livraison_autorisee'] = True
-            flash("✅ Livraison autorisée : votre colis sera déposé dans votre boîte aux lettres.")
-            return redirect(url_for('index'))
-        else:
-            flash("❌ Code incorrect. Vérifiez le code reçu par email.")
-            return redirect(url_for('autoriser_livraison'))
+        flash("❌ Code incorrect. Vérifiez le code reçu par email.")
+        return redirect(url_for('autoriser_livraison'))
 
     return render_template('autoriser_livraison.html')
+
 
 
 
