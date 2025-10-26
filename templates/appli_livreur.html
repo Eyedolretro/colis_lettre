@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Appli livreur - Feuille de route</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #4CAF50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e0f7e0;
+        }
+        .empty {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h2>Feuille de route - Livraisons confirmées</h2>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Produit</th>
+            <th>Date confirmation</th>
+        </tr>
+        {% if livraisons %}
+            {% for livraison in livraisons %}
+            <tr>
+                <td>{{ livraison.email }}</td>
+                <td>{{ livraison.produit }}</td>
+                <td>{{ livraison.date_confirmation.strftime('%d/%m/%Y %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" class="empty">Aucune livraison confirmée pour le moment.</td>
+            </tr>
+        {% endif %}
+    </table>
+</body>
+</html>

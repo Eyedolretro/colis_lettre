@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Autoriser la livraison</title>
+  <meta charset="UTF-8">
+  <title>Livraison autorisée</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    h2 { color: #4CAF50; }
+  </style>
 </head>
 <body>
-    <h2>Autoriser la livraison en votre absence</h2>
-    <p>Veuillez entrer le code de livraison reçu par e-mail :</p>
-
-    <form method="POST">
-        <input type="text" name="code" placeholder="Code de livraison" required>
-        <button type="submit">Autoriser</button>
-    </form>
-
-    <p><a href="{{ url_for('index') }}">Retour à l'accueil</a></p>
+  <h2>✅ Livraison autorisée</h2>
+  <p>Votre colis sera déposé dans votre boîte aux lettres demain.</p>
+  <p><a href="{{ url_for('index') }}">Retour à la boutique</a></p>
 </body>
 </html>
